@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: documents
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5444:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5680:5672"
+      - "15672:15672"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    depends_on:
+      - db
+
+  celery_worker:
+    build: .
+    command: celery -A app.tasks worker --loglevel=info
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  uvicorn:
+    build: .
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+      - rabbitmq
+      - celery_worker
+    ports:
+      - "8000:8000"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

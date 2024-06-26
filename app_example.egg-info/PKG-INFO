@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: app-example
+Version: 0.0.1
+Summary: FastApi app
+Author: alex
+Author-email: munikl869d@gmail.com
+Requires-Dist: fastapi==0.111.0
+Requires-Dist: uvicorn==0.30.0
+Requires-Dist: SQLAlchemy==2.0.30
+Requires-Dist: pytest==8.2.1
+Requires-Dist: requests==2.32.2
