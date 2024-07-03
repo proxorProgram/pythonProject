@@ -14,13 +14,9 @@ RUN apt-get update && apt-get install -y \
         celery
 
 COPY . /app
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/app/entrypoint.sh"]
 RUN pip install -e .
 
-EXPOSE 8000
 
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 
-CMD ["celery", "worker", "-A", "tasks", "--loglevel=info"]
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]

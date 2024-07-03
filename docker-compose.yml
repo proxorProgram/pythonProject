@@ -3,12 +3,14 @@ version: '3'
 services:
   db:
     image: postgres:15
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: documents
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    - POSTGRES_DB=${DB_NAME}
+    - POSTGRES_USER=${DB_USER}
+    - POSTGRES_PASSWORD=${DB_PASS}
+    #volumes:
+      #- postgres_data:/var/lib/postgresql/data
     ports:
       - "5444:5432"
 
@@ -44,5 +46,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  migrate:
+    build:
+      context: .
+    container_name: migrate
+    command: alembic upgrade head
+    depends_on:
+      - db
+      - uvicorn
 volumes:
   postgres_data:
