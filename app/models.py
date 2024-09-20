@@ -27,7 +27,7 @@ class Documents(Base):
 class Documents_text(Base):
     __tablename__ = 'Documents_text'
     id = Column(Integer, primary_key=True, index=True)
-    id_doc = Column(Integer, ForeignKey('Documents.id'))
+    id_doc = Column(Integer, ForeignKey('Documents.id', ondelete='CASCADE'))
     text = Column(String)
 
 
